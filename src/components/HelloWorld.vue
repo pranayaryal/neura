@@ -38,24 +38,42 @@
     // const zindi = tf.zeros([3,2]);
     // console.log(zindi.add(tf.zeros([3,2])).print());
 
+  const x = tf.tensor1d([1,2,3,4])
+  const indices = tf.tensor1d([1,3,3]);
 
 
 
 
-
-    export default {
-        name: 'HelloWorld',
-        data() {
-            return {
-                msg: 'Welcome to Your Vue.js App',
-            }
-        },
-
-        methods: {}
+export default {
+  name: 'HelloWorld',
+  data () {
+    return {
+        message: 'hello'
     }
+  },
+
+    mounted() {
+        console.log('components was mounted')
+
+    }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
+h1, h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
 </style>
