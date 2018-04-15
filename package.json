@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "^0.8.0",
+    "d3": "^5.0.0",
+    "node-sass": "^4.8.3",
+    "sass-loader": "^7.0.1",
     "vue": "^2.5.2"
   },
   "devDependencies": {

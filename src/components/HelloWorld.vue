@@ -1,11 +1,21 @@
 <template>
-    <div class="hello">
-        <h1>{{ message }}</h1>
+    <div class="container">
+        <section class="hero">
+            <div class="hero-body">
+                <h1 class="title">Welcome!</h1>
+                <h2 class="subtitle">Let's try neural networks on a synthetic data</h2>
+            </div>
+        </section>
+        <section class="section">
+            <button @click="showScatterPlot" class="button is-info">Show plot</button>
+        </section>
     </div>
 </template>
 
 <script>
+    require('bulma')
     import * as tf from '@tensorflow/tfjs'
+    import * as d3 from 'd3'
 
     const m = 400;
     const N = m / 2;
@@ -14,10 +24,12 @@
     const X = tf.zeros([m, D]);
     const Y = tf.zeros([m, 1]);
     const a = tf.scalar(4);
+    var collect = []
 
     const z = tf.variable(tf.scalar(32));
     const ranges = tf.range(0,5);
     const randomTf = tf.randomNormal([N]).mul(tf.scalar(0.2))
+    var constInit = tf.zeros([m]);
 
     for (var j=0; j < 3; j++){
         var ix = tf.range(N*j, N*(j+1));
@@ -25,35 +37,37 @@
 
         var innermul = tf.mul(t, tf.scalar(4))
         var sinned = tf.sin(innermul)
-
         var outermul = tf.mul(a, sinned)
-
         var r = tf.add(outermul , randomTf);
+        var costoconcat = tf.mul(r, tf.sin(t));
+        var sintoconcat = tf.mul(r, tf.sin(t));
+        var last = tf.concat([costoconcat, sintoconcat])
 
-        var costoconcat = tf.mul(r, tf.sin(t))
-        costoconcat.print()
 
-
-        // X[ix] = tf.concat([r * Math.sin(t), r * Math.cos(t)])
-        // var last = tf.mul(r, tf.sin(t)).concat(tf.mul(r, tf.cos(t)))
-        // console.log(last)
-        // var sined = r.mul(tf.scalar(Math.sin(t)));
-        // var cossed = r.mul(tf.scalar(Math.cos(2)))
-
+        collect.push(last)
 
 
     }
 
 
+    const stackedX = tf.stack([collect[0], collect[1], collect[2]])
+
+    const oneHalf = tf.fill([200, 1], 0)
+    const otherHalf = tf.fill([200, 1], 1);
+
+    const stackedY = tf.concat([oneHalf, otherHalf]);
 
 
 
-    // const zind = tf.variable(tf.zeros([3,2]));
-    // const zindi = tf.zeros([3,2]);
-    // console.log(zindi.add(tf.zeros([3,2])).print());
 
-  const x = tf.tensor1d([1,2,3,4])
-  const indices = tf.tensor1d([1,3,3]);
+
+
+
+
+
+
+
+
 
 
 
@@ -69,25 +83,32 @@ export default {
     mounted() {
         console.log('components was mounted')
 
+    },
+
+    methods: {
+        showScatterPlot() {
+            const margin = {
+                top: 20,
+                right: 20,
+                bottom: 30,
+                left: 40
+            };
+
+            const width = 960 - margin.left - margin.right;
+            const height = 500 - margin.top - margin.bottom;
+
+
+            d3.csv('calories.csv').then((error, data) => {
+                console.log(error)
+            })
+        }
     }
+
+
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
 </style>
