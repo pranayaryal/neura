@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h2>{{ message }}</h2>
+    <h2>{{ shape }}</h2>
   </div>
 </template>
 
@@ -14,28 +14,34 @@
 
   var X = tf.zeros([m,D]);
   const Y = tf.zeros([m, 1]);
+  var collect = [];
+
   const a = 4;
 
   const r = tf.range(0,4)
 
-  for (var j=0; j < 3; j++) {
+  for (var j=0; j < 2; j++) {
 
       const ix = tf.range(N*j, N*(j+1))
       const t = tf.add(tf.linspace(j*3.12,(j+1)*3.12,N) , tf.randomNormal([N]).mul(tf.scalar(0.2)))
       const r = tf.add(tf.sin(tf.scalar(4).mul(t)) , tf.randomNormal([N]).mul(tf.scalar(0.2)));
-      X[ix] = tf.mul(r, tf.sin(t)).concat(tf.mul(r, tf.cos(t)))
-      Y[ix] = j
-
-
+      const last = tf.mul(r, tf.sin(t)).concat(tf.mul(r, tf.cos(t)))
+      collect.push(last)
 
 
   }
 
+  console.log(collect)
+  const stacked = tf.stack([collect[0], collect[1]]);
+  stacked.print()
+
+  const Ycreated = tf.fill([1, 200], 0).concat(tf.fill([1, 200], 1))
+
 
   const x = tf.tensor1d([1,2,3,4])
-  const indices = tf.tensor1d([1,3,3]);
-
-
+  const range = tf.range(1,3);
+  // x[range].print()
+  tf.gather(x, range)
 
 
 
@@ -46,7 +52,8 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
-        message: 'hello'
+        message: 'hello',
+        shape: Ycreated.shape
     }
   },
 
