@@ -18,4 +18,20 @@ export default {
 </script>
 
 <style>
+  .dot{
+    stroke: #000;
+  }
+
+  .label{
+    display: block;
+    font-size: 11px;
+  }
+
+  .tooltip{
+
+    position: absolute;
+    width: 200px;
+    height: 70px;
+    pointer-events: none;
+  }
 </style>
