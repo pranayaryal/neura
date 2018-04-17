@@ -47,9 +47,21 @@
 
     const stacked = tf.stack([collect[0], collect[1]]);
 
+
     const Ycreated = tf.fill([1, 200], 0).concat(tf.fill([1, 200], 1), 1)
 
-    console.log(stacked)
+    const allStack = tf.concat([stacked, Ycreated])
+
+    const sliced = allStack.slice([0, 0], [1, 400])
+
+    const buff = tf.buffer(allStack.shape, allStack.dtype, allStack.dataSync())
+
+    const desiredArr = []
+
+    for (var i=0; i < 400; i++) {
+        desiredArr.push({'x1': buff.get([i]), 'x2': buff.get([400 + i]), 'class': buff.get([800 + i])})
+    }
+
 
 
     export default {
@@ -92,7 +104,8 @@
                 const yMap = d => yScale(yValue(d))
                 const yAxis = d3.axisLeft(yScale)
 
-                const cValue = d => d.Manufacturer
+                // const cValue = d => d.Manufacturer
+                const cValue = d => d.class
                 const color = d3.scaleOrdinal(d3.schemeCategory10);
 
 
@@ -108,8 +121,10 @@
                     d.Protein = +d.Protein
                 });
 
-                xScale.domain([d3.min(parsed, xValue) - 1, d3.max(parsed, xValue) + 1])
-                yScale.domain([d3.min(parsed, yValue) - 1, d3.max(parsed, yValue) + 1])
+                // xScale.domain([d3.min(parsed, xValue) - 1, d3.max(parsed, xValue) + 1])
+                xScale.domain([d3.min(desiredArr, xValue) - 1, d3.max(desiredArr, xValue) + 1])
+                // yScale.domain([d3.min(parsed, yValue) - 1, d3.max(parsed, yValue) + 1])
+                yScale.domain([d3.min(desiredArr, yValue) - 1, d3.max(desiredArr, yValue) + 1])
 
                 const svg = d3.select('#plotSection').append('svg')
                     .attr('width', width + margin.left + margin.right)
@@ -144,7 +159,8 @@
                     .text('Protein (g)')
 
                 svg.selectAll('.dot')
-                    .data(parsed)
+                    // .data(parsed)
+                    .data(desiredArr)
                     .enter().append('circle')
                     .attr('class', 'dot')
                     .attr('r', 8.5)
@@ -162,10 +178,11 @@
                             // .style('top', `${d3.event.pageY -28 }px`)
                             .style('top', `${d3.event.pageY }px`)
                             .style('border', '1px solid grey')
-                            .style('padding-left', '10px')
+                            .style('padding-left', '15px')
                             .style('padding-top', '5px')
                             .style('padding-bottom', '5px')
                             .style('background-color', 'lightblue')
+                            .style('width', `${d.CerealName.length + 200}px`)
                     })
                     .on('mouseout', d => {
                         tooltip.transition()
