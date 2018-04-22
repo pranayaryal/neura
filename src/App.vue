@@ -30,8 +30,12 @@ export default {
   .tooltip{
 
     position: absolute;
-    width: 200px;
+    /*width: 250px;*/
     height: 70px;
     pointer-events: none;
+  }
+
+  text {
+    display: block;
   }
 </style>
